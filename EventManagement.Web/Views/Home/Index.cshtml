@@ -1,0 +1,161 @@
+﻿@model IEnumerable<EventManagement.Web.Models.Event>
+
+@{
+    ViewData["Title"] = "Ana Sayfa";
+}
+
+<!-- Hero Section -->
+<div class="hero-section">
+    <div class="container">
+        <h1 class="hero-title">
+            <i class="fas fa-calendar-alt me-3"></i>Etkinlik Yönetim Sistemi
+        </h1>
+        <p class="hero-subtitle">
+            Belirli zamanlarda gerçekleşmesi planlanan etkinlikleri takip edebileceğiniz modern ve kullanıcı dostu platform.
+            Yaklaşan etkinlikleri keşfedin, detaylarını inceleyin ve takvim görünümünde organize edin.
+        </p>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
+                     class="img-fluid rounded shadow-lg" alt="Etkinlik Yönetimi" style="max-height: 300px; object-fit: cover; border-radius: 16px;">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Section -->
+<div class="row mb-5">
+    <div class="col-md-4 mb-3">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <i class="fas fa-calendar-check fa-3x text-primary mb-3"></i>
+                <h4 class="card-title">@Model.Count()</h4>
+                <p class="card-text text-muted">Toplam Etkinlik</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                <h4 class="card-title">Aktif</h4>
+                <p class="card-text text-muted">Kullanıcı Sistemi</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <i class="fas fa-clock fa-3x text-primary mb-3"></i>
+                <h4 class="card-title">Gerçek Zamanlı</h4>
+                <p class="card-text text-muted">Takvim Görünümü</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Events Section -->
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">
+                <i class="fas fa-list me-2"></i>Yaklaşan Etkinlikler
+            </h2>
+            <a href="@Url.Action("Calendar", "Home")" class="btn btn-outline-primary">
+                <i class="fas fa-calendar me-2"></i>Takvim Görünümü
+            </a>
+        </div>
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="text-center py-5">
+        <div class="card">
+            <div class="card-body">
+                <i class="fas fa-calendar-times fa-4x text-muted mb-4"></i>
+                <h4 class="text-muted mb-3">Henüz etkinlik bulunmuyor</h4>
+                <p class="text-muted mb-4">Yaklaşan etkinlikler burada listelenecek.</p>
+                <a href="@Url.Action("Calendar", "Home")" class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i>İlk Etkinliği Oluştur
+                </a>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="row">
+        @foreach (var eventItem in Model)
+        {
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    @if (!string.IsNullOrEmpty(eventItem.ImagePath))
+                    {
+                        <div class="card-img-top position-relative" style="height: 200px; overflow: hidden;">
+                            <img src="@eventItem.ImagePath" class="w-100 h-100" alt="@eventItem.Title" style="object-fit: cover;">
+                            <div class="position-absolute top-0 end-0 m-2">
+                                <span class="badge badge-primary">
+                                    <i class="fas fa-calendar me-1"></i>@eventItem.StartDate.ToString("dd MMM")
+                                </span>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center position-relative" style="height: 200px;">
+                            <i class="fas fa-calendar-alt fa-3x text-muted"></i>
+                            <div class="position-absolute top-0 end-0 m-2">
+                                <span class="badge badge-primary">
+                                    <i class="fas fa-calendar me-1"></i>@eventItem.StartDate.ToString("dd MMM")
+                                </span>
+                            </div>
+                        </div>
+                    }
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">@eventItem.Title</h5>
+                        <p class="card-text text-muted flex-grow-1">@eventItem.ShortDescription</p>
+                        <div class="mb-3">
+                            <div class="d-flex align-items-center text-muted mb-2">
+                                <i class="fas fa-clock me-2"></i>
+                                <small>@eventItem.StartDate.ToString("dd.MM.yyyy HH:mm") - @eventItem.EndDate.ToString("dd.MM.yyyy HH:mm")</small>
+                            </div>
+                            <div class="d-flex align-items-center text-muted">
+                                <i class="fas fa-map-marker-alt me-2"></i>
+                                <small>Konum belirtilmemiş</small>
+                            </div>
+                        </div>
+                        <a href="@Url.Action("EventDetail", "Home", new { id = eventItem.Id })" class="btn btn-primary w-100">
+                            <i class="fas fa-eye me-2"></i>Detayları Gör
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+<!-- Call to Action -->
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body text-center">
+                <h3 class="card-title mb-3">Etkinliklerinizi Yönetmeye Başlayın</h3>
+                <p class="card-text text-muted mb-4">
+                    Modern ve kullanıcı dostu arayüzümüzle etkinliklerinizi kolayca oluşturun, düzenleyin ve takip edin.
+                </p>
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="@Url.Action("Calendar", "Home")" class="btn btn-primary btn-lg">
+                        <i class="fas fa-calendar me-2"></i>Takvim Görünümü
+                    </a>
+                    @if (!Context.Session.GetInt32("UserId").HasValue)
+                    {
+                        <a href="@Url.Action("Register", "Auth")" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-user-plus me-2"></i>Hemen Kayıt Ol
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

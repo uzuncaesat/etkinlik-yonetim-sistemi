@@ -1,0 +1,87 @@
+@model IEnumerable<EventManagement.Web.Models.Event>
+
+@{
+    ViewData["Title"] = "Takvim";
+}
+
+<div class="row">
+    <div class="col-12 mb-3">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="@Url.Action("Index", "Home")">
+                        <i class="fas fa-home me-1"></i>Ana Sayfa
+                    </a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Takvim</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-calendar me-2"></i>Etkinlik Takvimi
+                </h4>
+            </div>
+            <div class="card-body">
+                <div id="calendar"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'tr',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                buttonText: {
+                    today: 'Bugün',
+                    month: 'Ay',
+                    week: 'Hafta',
+                    day: 'Gün'
+                },
+                events: [
+                    @foreach (var eventItem in Model)
+                    {
+                        <text>
+                        {
+                            id: @eventItem.Id,
+                            title: '@Html.Raw(System.Web.HttpUtility.JavaScriptStringEncode(eventItem.Title))',
+                            start: '@eventItem.StartDate.ToString("yyyy-MM-ddTHH:mm:ss")',
+                            end: '@eventItem.EndDate.ToString("yyyy-MM-ddTHH:mm:ss")',
+                            url: '@Url.Action("EventDetail", "Home", new { id = eventItem.Id })',
+                            backgroundColor: '#007bff',
+                            borderColor: '#0056b3',
+                            textColor: '#ffffff'
+                        },
+                        </text>
+                    }
+                ],
+                eventClick: function(info) {
+                    if (info.event.url) {
+                        window.location.href = info.event.url;
+                        return false;
+                    }
+                },
+                eventTimeFormat: {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false
+                }
+            });
+            calendar.render();
+        });
+    </script>
+} 

@@ -1,0 +1,111 @@
+@model EventManagement.Web.Models.User
+
+@{
+    ViewData["Title"] = "Profil";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-user-edit me-2"></i>Profil Bilgileri
+                </h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="Profile" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="PasswordHash" />
+                    <input type="hidden" asp-for="PasswordSalt" />
+                    <input type="hidden" asp-for="CreatedAt" />
+                    <input type="hidden" asp-for="IsActive" />
+                    
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label"></label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-user"></i>
+                            </span>
+                            <input asp-for="Name" class="form-control" placeholder="Ad Soyad" />
+                        </div>
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label"></label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-envelope"></i>
+                            </span>
+                            <input asp-for="Email" class="form-control" placeholder="ornek@email.com" />
+                        </div>
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="BirthDate" class="form-label"></label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-calendar"></i>
+                            </span>
+                            <input asp-for="BirthDate" class="form-control" type="date" />
+                        </div>
+                        <span asp-validation-for="BirthDate" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Güncelle
+                        </button>
+                        <a href="@Url.Action("Index", "Admin")" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Geri Dön
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card shadow mt-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle me-2"></i>Hesap Bilgileri
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Kayıt Tarihi:</strong></p>
+                        <p class="text-muted">@Model.CreatedAt.ToString("dd.MM.yyyy HH:mm")</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Son Güncelleme:</strong></p>
+                        <p class="text-muted">@Model.UpdatedAt.ToString("dd.MM.yyyy HH:mm")</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Hesap Durumu:</strong></p>
+                        @if (Model.IsActive)
+                        {
+                            <span class="badge bg-success">Aktif</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">Pasif</span>
+                        }
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Toplam Etkinlik:</strong></p>
+                        <p class="text-muted">@Model.Events.Count</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+} 

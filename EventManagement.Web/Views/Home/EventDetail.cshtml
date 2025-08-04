@@ -1,0 +1,113 @@
+@model EventManagement.Web.Models.Event
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="row">
+    <div class="col-12 mb-3">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="@Url.Action("Index", "Home")">
+                        <i class="fas fa-home me-1"></i>Ana Sayfa
+                    </a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">@Model.Title</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            @if (!string.IsNullOrEmpty(Model.ImagePath))
+            {
+                <img src="@Model.ImagePath" class="card-img-top" alt="@Model.Title" style="max-height: 400px; object-fit: cover;">
+            }
+            else
+            {
+                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 300px;">
+                    <i class="fas fa-calendar-alt fa-4x text-muted"></i>
+                </div>
+            }
+            <div class="card-body">
+                <h1 class="card-title text-primary">@Model.Title</h1>
+                
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-calendar-plus text-success me-2"></i>
+                            <strong>Başlangıç:</strong>
+                            <span class="ms-2">@Model.StartDate.ToString("dd.MM.yyyy HH:mm")</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-calendar-minus text-danger me-2"></i>
+                            <strong>Bitiş:</strong>
+                            <span class="ms-2">@Model.EndDate.ToString("dd.MM.yyyy HH:mm")</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <h5>Kısa Açıklama</h5>
+                    <p class="text-muted">@Model.ShortDescription</p>
+                </div>
+
+                <div class="mb-3">
+                    <h5>Detaylı Açıklama</h5>
+                    <div class="border rounded p-3 bg-light">
+                        @Html.Raw(Model.LongDescription)
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">
+                        <i class="fas fa-user me-1"></i>Ekleyen: @Model.Creator.Name
+                    </small>
+                    <small class="text-muted">
+                        <i class="fas fa-clock me-1"></i>Oluşturulma: @Model.CreatedAt.ToString("dd.MM.yyyy")
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-clock me-2"></i>Son Etkinlikler
+                </h5>
+            </div>
+            <div class="card-body">
+                @if (ViewBag.RecentEvents != null && ((List<EventManagement.Web.Models.Event>)ViewBag.RecentEvents).Any())
+                {
+                    <div class="list-group list-group-flush">
+                        @foreach (var recentEvent in (List<EventManagement.Web.Models.Event>)ViewBag.RecentEvents)
+                        {
+                            if (recentEvent.Id != Model.Id)
+                            {
+                                <a href="@Url.Action("EventDetail", "Home", new { id = recentEvent.Id })" 
+                                   class="list-group-item list-group-item-action">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">@recentEvent.Title</h6>
+                                        <small class="text-muted">@recentEvent.StartDate.ToString("dd.MM")</small>
+                                    </div>
+                                    <p class="mb-1 text-muted small">@recentEvent.ShortDescription</p>
+                                </a>
+                            }
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted text-center">Henüz başka etkinlik bulunmuyor.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div> 

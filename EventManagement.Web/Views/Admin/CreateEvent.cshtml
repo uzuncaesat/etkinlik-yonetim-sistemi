@@ -1,0 +1,127 @@
+@model EventManagement.Web.ViewModels.EventViewModel
+
+@{
+    ViewData["Title"] = Model.Id > 0 ? "Etkinlik Düzenle" : "Yeni Etkinlik";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-calendar-plus me-2"></i>@ViewData["Title"]
+                </h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="@(Model.Id > 0 ? "EditEvent" : "CreateEvent")" method="post" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="ImagePath" />
+                    
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                <label asp-for="Title" class="form-label"></label>
+                                <input asp-for="Title" class="form-control" placeholder="Etkinlik başlığını giriniz" />
+                                <span asp-validation-for="Title" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Durum</label>
+                                <div class="form-check">
+                                    <input asp-for="IsActive" class="form-check-input" />
+                                    <label asp-for="IsActive" class="form-check-label">Aktif</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label asp-for="StartDate" class="form-label"></label>
+                                <input asp-for="StartDate" class="form-control" type="datetime-local" />
+                                <span asp-validation-for="StartDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label asp-for="EndDate" class="form-label"></label>
+                                <input asp-for="EndDate" class="form-control" type="datetime-local" />
+                                <span asp-validation-for="EndDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="ShortDescription" class="form-label"></label>
+                        <textarea asp-for="ShortDescription" class="form-control" rows="3" 
+                                  placeholder="Kısa açıklama (en fazla 512 karakter)"></textarea>
+                        <span asp-validation-for="ShortDescription" class="text-danger"></span>
+                        <small class="form-text text-muted">En fazla 512 karakter</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="LongDescription" class="form-label"></label>
+                        <textarea asp-for="LongDescription" class="form-control" rows="8" 
+                                  placeholder="Detaylı açıklama (HTML formatında)"></textarea>
+                        <span asp-validation-for="LongDescription" class="text-danger"></span>
+                        <small class="form-text text-muted">HTML formatında detaylı açıklama yazabilirsiniz</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="ImageFile" class="form-label"></label>
+                        @if (!string.IsNullOrEmpty(Model.ImagePath))
+                        {
+                            <div class="mb-2">
+                                <img src="@Model.ImagePath" class="img-thumbnail" style="max-height: 200px;" alt="Mevcut resim" />
+                                <p class="text-muted small">Mevcut resim</p>
+                            </div>
+                        }
+                        <input asp-for="ImageFile" class="form-control" type="file" accept=".jpg,.jpeg,.png" />
+                        <span asp-validation-for="ImageFile" class="text-danger"></span>
+                        <small class="form-text text-muted">JPG, JPEG, PNG formatında, en fazla 2MB</small>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="@Url.Action("Events", "Admin")" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>İptal
+                        </a>
+                        <div>
+                            @if (Model.Id > 0)
+                            {
+                                <button type="button" class="btn btn-danger me-2" onclick="confirmDelete()">
+                                    <i class="fas fa-trash me-2"></i>Sil
+                                </button>
+                            }
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>@(Model.Id > 0 ? "Güncelle" : "Kaydet")
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                
+                @if (Model.Id > 0)
+                {
+                    <form id="deleteForm" asp-action="DeleteEvent" method="post" style="display: none;">
+                        <input type="hidden" name="id" value="@Model.Id" />
+                    </form>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        function confirmDelete() {
+            if (confirm('Bu etkinliği silmek istediğinizden emin misiniz?')) {
+                document.getElementById('deleteForm').submit();
+            }
+        }
+    </script>
+} 
