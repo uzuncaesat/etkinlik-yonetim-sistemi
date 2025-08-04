@@ -154,7 +154,7 @@ Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için `LICENSE` dosy
 
 ## 👨‍💻 Geliştirici
 
-**Esat Berat** - [GitHub](https://github.com/kullaniciadi)
+**Esat Berat** - [GitHub](https://github.com/uzuncaesat)
 
 ## 🙏 Teşekkürler
 
